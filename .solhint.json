@@ -1,0 +1,29 @@
+{
+  "rules": {
+    "avoid-suicide": "error",
+    "code-complexity": ["warn",7],
+    "function-max-lines": ["warn",50],
+    "max-line-length": ["warn",120],
+    "max-states-count": ["warn",15],
+    "no-empty-blocks": "warn",
+    "no-unused-vars": "warn",
+    "payable-fallback": "warn",
+	"var-name-mixedcase": "warn",
+	"use-forbidden-name": "warn",
+	"visibility-modifier-order": "warn",
+	"avoid-sha3": "warn",
+	"avoid-call-value": "warn",
+	"multiple-sends": "warn",
+	"no-complex-fallback": "warn",
+	"not-rely-on-time": "warn",
+	"reentrancy": "warn",
+	"state-visibility": "warn",
+	"quotes": ["error","double"],
+	"const-name-snakecase": "warn",
+	"event-name-camelcase": "warn",
+	"func-name-mixedcase": "warn",
+	"func-param-name-mixedcase": "warn",
+	"modifier-name-mixedcase": "warn",
+	"private-vars-leading-underscore": ["warn",{"strict":false}]
+  }
+}

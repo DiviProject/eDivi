@@ -1,0 +1,7 @@
+.audit.sh
+.env
+.solcx-lock-0.8.7
+contracts/.placeholder
+test/.placeholder
+build
+node_modules

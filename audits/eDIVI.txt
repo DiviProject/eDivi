@@ -1,0 +1,23 @@
+Mythril: The analysis was completed successfully. No issues were detected.
+
+Issues:
+1. All files are using solc ^0.8.7. Due to solc frequently releases new compiler versions, using an 
+old version prevents access to new Solidity security checks. 
+
+Stable version: 0.6.12/0.7.6
+
+2. Contract name for eDIVI token is "eDIVI". This name not follows solidity naming convention.
+
+3. Some functions could be marked as `external`, but is is used `public` due to Openzeppelin standard. 
+Such functions as:
+
+ERC20.name()                               - lines 65-67
+ERC20.symbol()                             - lines 73-75
+ERC20.decimals()                           - lines 86-88
+ERC20.balanceOf(address)                   - lines 100-102
+ERC20.transfer(address,uint256)            - lines 112-115
+ERC20.allowance(address,address)           - lines 120-122
+ERC20.approve(address,uint256)             - lines 131-134
+ERC20.tranferFrom(address,address,uint256) - lines 149-163
+ERC20.increaseAllowance(address,uint256)   - lines 177-180
+ERC20.decreaseAllowance(address,uint256)   - lines 196-204

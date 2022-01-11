@@ -1,0 +1,69 @@
+Mythril: The analysis was completed successfully. No issues were detected.
+
+Issues:
+1. All files are using solc ^0.8.7. Due to solc frequently releases new compiler versions, using an 
+old version prevents access to new Solidity security checks. 
+
+Stable version: 0.6.12/0.7.6
+
+2. Contract has external call inside a loop. Calls inside a loop might lead to a denial-of-service attack.
+
+Since this funciton is availiable only to `Division Member` and this transaction must be a collective decision seems like it's not a problem. 
+
+3. The use of assembly is error-prone and should be avoided.
+
+Assembly usage is done by Openzeppelin standard and it is pretty safe.
+
+You can find assembly usage at:
+Address.isContract                          - lines 34-46
+Address.verifyCallResult(bool,bytes,string) - lines 42-44 
+
+4. The use of low-level calls is error-prone. Low-level calls do not check for code existence or call success.
+
+Since this funciton is availiable only to `Division Member` and this transaction must be a collective decision seems like it's not a problem. 
+
+5. Unprotected call to a function sending Ether to an arbitrary address. Function can send ether to arbitrary user
+
+Due to fact that `value` is hardcoded zero it's not a problem at all. Could be found at:
+Division._execute(address[],bytes[]) - lines 193-206
+
+Potential Vector of Attack (PVA):
+Proposal unique identifier is a proposal's parameters that are hased with keccak256.
+Potentially proposal unique identifier may have collsisions, with help of manipulation of parameters.
+
+Example:
+Proposal = KECCAK256( ADDRESSES, CALLDATAS, KECCAK256(DESCRIPTION) )
+ADDRESSES   - array of destination addresses
+CALLDATAS   - array of respective calldatas
+DESCRIPTION - any string, that can identify propsoals with eqal ADDRESSES and CALLDATAS
+
+Potential Attack:
+step 1: division member submit proposal:
+VALID_PROPOSAL = KECCAK256( ADDRESSES_1, CALLDATAS_1, KECCAK256(DESCRIPTION_1) )
+
+step 2: division members vote for proposal:
+VALID_PROPOSAL = KECCAK256( ADDRESSES_1, CALLDATAS_1, KECCAK256(DESCRIPTION_1) )
+
+step 3: malicious division member execute on of:
+MALICIOUS_PROPOSAL_1 = KECCAK256( ADDRESSES_2, CALLDATAS_1, KECCAK256(DESCRIPTION_1) )
+MALICIOUS_PROPOSAL_2 = KECCAK256( ADDRESSES_1, CALLDATAS_2, KECCAK256(DESCRIPTION_1) )
+MALICIOUS_PROPOSAL_3 = KECCAK256( ADDRESSES_1, CALLDATAS_1, KECCAK256(DESCRIPTION_2) )
+MALICIOUS_PROPOSAL_4 = KECCAK256( ADDRESSES_2, CALLDATAS_2, KECCAK256(DESCRIPTION_1) )
+MALICIOUS_PROPOSAL_5 = KECCAK256( ADDRESSES_2, CALLDATAS_1, KECCAK256(DESCRIPTION_2) )
+MALICIOUS_PROPOSAL_6 = KECCAK256( ADDRESSES_1, CALLDATAS_2, KECCAK256(DESCRIPTION_2) )
+MALICIOUS_PROPOSAL_7 = KECCAK256( ADDRESSES_2, CALLDATAS_2, KECCAK256(DESCRIPTION_2) )
+
+where MALICIOUS_PROPOSAL_N == VALID_PROPOSAL
+
+Solutions:
+1. Remove possibility for division member to put a set of transaction into proposal.
+Pros: less risk from malicious division members
+Cons: transaction fees for division members higher (every transaciton executed one by one)
+Note: in any case, malicious user can manipulate proposal identifier through DESCRIPTION.
+
+2. Remove possibility for division members to put a set of transactions and description into proposal
+Pros: no risk from malicious division members
+Cons: fees higher and only one pair of { ADDRESS => CALLDATA } could exists in the moment
+
+3. Leave as is
+Due to the fact that new division members are elected only by other division members and can be removed after malicious transaction it seems like it's not a big deal.

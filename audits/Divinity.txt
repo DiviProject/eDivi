@@ -1,0 +1,15 @@
+Mythril: The analysis was completed successfully. No issues were detected.
+
+Issues:
+1. All files are using solc ^0.8.7. Due to solc frequently releases new compiler versions, using an 
+old version prevents access to new Solidity security checks. 
+
+Stable version: 0.6.12/0.7.6
+
+2. The use of assembly is error-prone and should be avoided.
+
+Assembly usage is done by Openzeppelin standard and it is pretty safe.
+
+You can find assembly usage at:
+Address.isContract                          - lines 34-46
+Address.verifyCallResult(bool,bytes,string) - lines 42-44
